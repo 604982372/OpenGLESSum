@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btn_graphical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="平面图形跟几何图形"
+        />
+
+    <Button
+        android:id="@+id/btn_projection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="投影及各种变换" />
+
+    <Button
+        android:id="@+id/btn_illumination"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="光照使用" />
+
+    <Button
+        android:id="@+id/btn_texture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="纹理映射" />
+
+    <Button
+        android:id="@+id/btn_objmodel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="3D模型加载" />
+
+    <Button
+        android:id="@+id/btn_ndk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NDK进行OpenGL ES开发" />
+
+    <Button
+        android:id="@+id/btn_camera_beauty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="相机美颜" />
+
+
+</LinearLayout>
