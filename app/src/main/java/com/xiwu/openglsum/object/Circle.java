@@ -13,7 +13,7 @@ import java.nio.FloatBuffer;
 
 import static com.xiwu.openglsum.object.Contants.UNIT_SIZE;
 
-public class Triangle {
+public class Circle {
     public static float[] mProjMatrix = new float[16];//4x4 投影矩阵
     public static float[] mVMatrix = new float[16];//摄像机位置朝向的参数矩阵
     public static float[] mMVPMatrix;//最后起作用的总变换矩阵
@@ -31,7 +31,7 @@ public class Triangle {
     int vCount = 0;
     float xAngle = 0;//绕x轴旋转的角度
 
-    public Triangle(GraphicalSurfaceView mv) {
+    public Circle(GraphicalSurfaceView mv) {
         //调用初始化顶点数据的initVertexData方法
         initVertexData();
         //调用初始化着色器的intShader方法
@@ -58,8 +58,8 @@ public class Triangle {
         float colors[] = new float[]//顶点颜色数组
                 {
                         1, 1, 1, 0,//白色
-                        0, 0, 1, 0,//蓝
-                        0, 1, 0, 0//绿
+                        1, 1, 1, 0,//蓝
+                        1, 1, 1, 0//绿
                 };
 
         ByteBuffer cbb = ByteBuffer.allocateDirect(colors.length * 4);
@@ -122,6 +122,7 @@ public class Triangle {
         //绘制三角形
         GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, vCount);
     }
+
     public static float[] getFianlMatrix(float[] spec) {
         mMVPMatrix = new float[16];
         Matrix.multiplyMM(mMVPMatrix, 0, mVMatrix, 0, spec, 0);

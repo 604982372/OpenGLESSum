@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.xiwu.openglsum.R;
 import com.xiwu.openglsum.glsurfaceview.GraphicalSurfaceView;
+import com.xiwu.openglsum.glsurfaceview.MySurfaceView;
 
 public class GraphicalActivity extends AppCompatActivity {
     GraphicalSurfaceView mSurfaceView;
