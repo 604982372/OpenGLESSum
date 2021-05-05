@@ -5,17 +5,17 @@ import android.opengl.GLES30;
 import android.opengl.Matrix;
 
 import com.xiwu.openglsum.glsurfaceview.GraphicalSurfaceView;
+import com.xiwu.openglsum.utils.MatrixState;
 import com.xiwu.openglsum.utils.ShaderUtil;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
+import static com.xiwu.openglsum.object.Contants.UNIT_SIZE;
+
 //梯形
 public class Trapezoid {
-    public static float[] mProjMatrix = new float[16];//4x4 投影矩阵
-    public static float[] mVMatrix = new float[16];//摄像机位置朝向的参数矩阵
-    public static float[] mMVPMatrix;//最后起作用的总变换矩阵
 
     int mProgram;//自定义渲染管线程序id
     int muMVPMatrixHandle;//总变换矩阵引用
@@ -26,9 +26,9 @@ public class Trapezoid {
     static float[] mMMatrix = new float[16];//具体物体的移动旋转矩阵，包括旋转、平移、缩放
 
     FloatBuffer mVertexBuffer;//顶点坐标数据缓冲
-    FloatBuffer mColorBuffer;//顶点着色数据缓冲
     int vCount = 0;
     float xAngle = 0;//绕x轴旋转的角度
+    private FloatBuffer mColorBuffer;
 
     public Trapezoid(GraphicalSurfaceView mv) {
         //调用初始化顶点数据的initVertexData方法
@@ -40,13 +40,13 @@ public class Trapezoid {
     public void initVertexData()//初始化顶点数据的方法
     {
         //顶点坐标数据的初始化
-        vCount = 3;
-        final float UNIT_SIZE = 0.2f;
+        vCount = 4;
         float vertices[] = new float[]//顶点坐标数组
                 {
-                        -4 * UNIT_SIZE, 0, 0,
-                        0, 4 * UNIT_SIZE, 0,
-                        4 * UNIT_SIZE, 0, 0,
+                        -0.5f * UNIT_SIZE, 1 * UNIT_SIZE, 0,
+                        -1 * UNIT_SIZE, -1 * UNIT_SIZE, 0,
+                        0.5f * UNIT_SIZE, 1 * UNIT_SIZE, 0,
+                        1 * UNIT_SIZE, -1 * UNIT_SIZE, 0,
                 };
 
         ByteBuffer vbb = ByteBuffer.allocateDirect(vertices.length * 4);
@@ -57,9 +57,10 @@ public class Trapezoid {
 
         float colors[] = new float[]//顶点颜色数组
                 {
-                        1, 1, 1, 0,//白色
-                        0, 0, 1, 0,//蓝
-                        0, 1, 0, 0//绿
+                        1, 0, 1, 0,//白色
+                        1, 0, 1, 0,//蓝
+                        1, 0, 1, 0,//绿
+                        1, 0, 1, 0//绿
                 };
 
         ByteBuffer cbb = ByteBuffer.allocateDirect(colors.length * 4);
@@ -97,7 +98,7 @@ public class Trapezoid {
         //设置绕x轴旋转
         Matrix.rotateM(mMMatrix, 0, xAngle, 1, 0, 0);
         //将变换矩阵传入渲染管线
-        GLES30.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, Trapezoid.getFianlMatrix(mMMatrix), 0);
+        GLES30.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, MatrixState.getFinalMatrix(mMMatrix), 0);
         //将顶点位置数据传送进渲染管线
         GLES30.glVertexAttribPointer(
                 maPositionHandle,
@@ -119,14 +120,7 @@ public class Trapezoid {
                 );
         GLES30.glEnableVertexAttribArray(maPositionHandle);//启用顶点位置数据
         GLES30.glEnableVertexAttribArray(maColorHandle);//启用顶点着色数据
-        //绘制三角形
+        //绘制梯形
         GLES30.glDrawArrays(GLES30.GL_TRIANGLE_STRIP, 0, vCount);
-    }
-
-    public static float[] getFianlMatrix(float[] spec) {
-        mMVPMatrix = new float[16];
-        Matrix.multiplyMM(mMVPMatrix, 0, mVMatrix, 0, spec, 0);
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjMatrix, 0, mMVPMatrix, 0);
-        return mMVPMatrix;
     }
 }

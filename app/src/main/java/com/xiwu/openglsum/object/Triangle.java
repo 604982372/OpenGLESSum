@@ -5,6 +5,7 @@ import android.opengl.GLES30;
 import android.opengl.Matrix;
 
 import com.xiwu.openglsum.glsurfaceview.GraphicalSurfaceView;
+import com.xiwu.openglsum.utils.MatrixState;
 import com.xiwu.openglsum.utils.ShaderUtil;
 
 import java.nio.ByteBuffer;
@@ -14,9 +15,6 @@ import java.nio.FloatBuffer;
 import static com.xiwu.openglsum.object.Contants.UNIT_SIZE;
 
 public class Triangle {
-    public static float[] mProjMatrix = new float[16];//4x4 投影矩阵
-    public static float[] mVMatrix = new float[16];//摄像机位置朝向的参数矩阵
-    public static float[] mMVPMatrix;//最后起作用的总变换矩阵
 
     int mProgram;//自定义渲染管线程序id
     int muMVPMatrixHandle;//总变换矩阵引用
@@ -97,7 +95,7 @@ public class Triangle {
         //设置绕x轴旋转
         Matrix.rotateM(mMMatrix, 0, xAngle, 1, 0, 0);
         //将变换矩阵传入渲染管线
-        GLES30.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, Triangle.getFianlMatrix(mMMatrix), 0);
+        GLES30.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, MatrixState.getFinalMatrix(mMMatrix), 0);
         //将顶点位置数据传送进渲染管线
         GLES30.glVertexAttribPointer(
                 maPositionHandle,
@@ -121,11 +119,5 @@ public class Triangle {
         GLES30.glEnableVertexAttribArray(maColorHandle);//启用顶点着色数据
         //绘制三角形
         GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, vCount);
-    }
-    public static float[] getFianlMatrix(float[] spec) {
-        mMVPMatrix = new float[16];
-        Matrix.multiplyMM(mMVPMatrix, 0, mVMatrix, 0, spec, 0);
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjMatrix, 0, mMVPMatrix, 0);
-        return mMVPMatrix;
     }
 }

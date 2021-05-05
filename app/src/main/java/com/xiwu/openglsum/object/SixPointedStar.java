@@ -11,116 +11,121 @@ import java.util.List;
 
 import android.opengl.GLES30;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import com.xiwu.openglsum.glsurfaceview.GraphicalSurfaceView;
-import com.xiwu.openglsum.glsurfaceview.MySurfaceView;
 import com.xiwu.openglsum.utils.MatrixState;
 import com.xiwu.openglsum.utils.ShaderUtil;
 
-//Áù½ÇĞÇ
+//å…­è§’æ˜Ÿ
 public class SixPointedStar {
-    int mProgram;//×Ô¶¨ÒåäÖÈ¾¹ÜÏß×ÅÉ«Æ÷³ÌĞòid
-    int muMVPMatrixHandle;//×Ü±ä»»¾ØÕóÒıÓÃ
-    int maPositionHandle; //¶¥µãÎ»ÖÃÊôĞÔÒıÓÃ  
-    int maColorHandle; //¶¥µãÑÕÉ«ÊôĞÔÒıÓÃ  
-    String mVertexShader;    //¶¥µã×ÅÉ«Æ÷´úÂë½Å±¾
-    String mFragmentShader;    //Æ¬Ôª×ÅÉ«Æ÷´úÂë½Å±¾
-    static float[] mMMatrix = new float[16];    //¾ßÌåÎïÌåµÄ3D±ä»»¾ØÕó£¬°üÀ¨Ğı×ª¡¢Æ½ÒÆ¡¢Ëõ·Å
+    int mProgram;//è‡ªå®šä¹‰æ¸²æŸ“ç®¡çº¿ç€è‰²å™¨ç¨‹åºid
+    int muMVPMatrixHandle;//æ€»å˜æ¢çŸ©é˜µå¼•ç”¨
+    int maPositionHandle; //é¡¶ç‚¹ä½ç½®å±æ€§å¼•ç”¨
+    int maColorHandle; //é¡¶ç‚¹é¢œè‰²å±æ€§å¼•ç”¨
+    String mVertexShader;    //é¡¶ç‚¹ç€è‰²å™¨ä»£ç è„šæœ¬
+    String mFragmentShader;    //ç‰‡å…ƒç€è‰²å™¨ä»£ç è„šæœ¬
+    static float[] mMMatrix = new float[16];    //å…·ä½“ç‰©ä½“çš„3Då˜æ¢çŸ©é˜µï¼ŒåŒ…æ‹¬æ—‹è½¬ã€å¹³ç§»ã€ç¼©æ”¾
 
-    FloatBuffer mVertexBuffer;//¶¥µã×ø±êÊı¾İ»º³å
+    FloatBuffer mVertexBuffer;//é¡¶ç‚¹åæ ‡æ•°æ®ç¼“å†²
     int vCount = 0;
-    //public float yAngle=0;//ÈÆyÖáĞı×ªµÄ½Ç¶È
-    // public  float xAngle=0;//ÈÆzÖáĞı×ªµÄ½Ç¶È
+    //public float yAngle=0;//ç»•yè½´æ—‹è½¬çš„è§’åº¦
+    // public  float xAngle=0;//ç»•zè½´æ—‹è½¬çš„è§’åº¦
     final float UNIT_COLOR = 1;
-    float color[] = new float[3];//Îå½ÇĞÇµÄÑÕÉ«
+    float color[] = new float[3];//äº”è§’æ˜Ÿçš„é¢œè‰²
 
     public SixPointedStar(GraphicalSurfaceView mv, float r, float R, float z, float[] color) {
-        this.color = color;//Îå½ÇĞÇµÄÑÕÉ«
-        //µ÷ÓÃ³õÊ¼»¯¶¥µãÊı¾İµÄinitVertexData·½·¨
+        this.color = color;//äº”è§’æ˜Ÿçš„é¢œè‰²
+        //è°ƒç”¨åˆå§‹åŒ–é¡¶ç‚¹æ•°æ®çš„initVertexDataæ–¹æ³•
         initVertexData(R, r, z);
-        //µ÷ÓÃ³õÊ¼»¯×ÅÉ«Æ÷µÄintShader·½·¨
+        //è°ƒç”¨åˆå§‹åŒ–ç€è‰²å™¨çš„intShaderæ–¹æ³•
         initShader(mv);
     }
 
-    // ³õÊ¼»¯¶¥µã×ø±êÊı¾İµÄ·½·¨
+    // åˆå§‹åŒ–é¡¶ç‚¹åæ ‡æ•°æ®çš„æ–¹æ³•
     public void initVertexData(float R, float r, float z) {
         List<Float> flist = new ArrayList<Float>();
-        float tempAngle = 360 / 6;//Æ½¾ù½Ç¶ÈÖµ
+        float tempAngle = 360 / 6;//å¹³å‡è§’åº¦å€¼
+        flist.add(0f);
+        flist.add(0f);
+        flist.add(0f);
         for (float angle = 0; angle < 360; angle += tempAngle) {
-            //µÚÒ»¸öÈı½ÇĞÎ
-            //µÚÒ»¸öÖĞĞÄµã
-            flist.add(0f);
+            //ç¬¬ä¸€ä¸ªä¸‰è§’å½¢
+            //ç¬¬ä¸€ä¸ªä¸­å¿ƒç‚¹
+          /*  flist.add(0f);
             flist.add(0f);
             flist.add(z);
-            //µÚ¶ş¸öµã
+*/
+            //ç¬¬äºŒä¸ªç‚¹
             flist.add((float) (R * UNIT_SIZE * Math.cos(Math.toRadians(angle))));
             flist.add((float) (R * UNIT_SIZE * Math.sin(Math.toRadians(angle))));
             flist.add(z);
-            //µÚÈı¸öµã
+            //ç¬¬ä¸‰ä¸ªç‚¹
             flist.add((float) (r * UNIT_SIZE * Math.cos(Math.toRadians(angle + tempAngle / 2))));
             flist.add((float) (r * UNIT_SIZE * Math.sin(Math.toRadians(angle + tempAngle / 2))));
             flist.add(z);
-
-            //µÚ¶ş¸öÈı½ÇĞÎ
-            //µÚÒ»¸öÖĞĞÄµã
+/*
+            //ç¬¬äºŒä¸ªä¸‰è§’å½¢
+            //ç¬¬ä¸€ä¸ªä¸­å¿ƒç‚¹
             flist.add(0f);
             flist.add(0f);
             flist.add(z);
-            //µÚ¶ş¸öµã
+            //ç¬¬äºŒä¸ªç‚¹
             flist.add((float) (r * UNIT_SIZE * Math.cos(Math.toRadians(angle + tempAngle / 2))));
             flist.add((float) (r * UNIT_SIZE * Math.sin(Math.toRadians(angle + tempAngle / 2))));
             flist.add(z);
-            //µÚÈı¸öµã
+            //ç¬¬ä¸‰ä¸ªç‚¹
             flist.add((float) (R * UNIT_SIZE * Math.cos(Math.toRadians(angle + tempAngle))));
             flist.add((float) (R * UNIT_SIZE * Math.sin(Math.toRadians(angle + tempAngle))));
-            flist.add(z);
+            flist.add(z);*/
         }
-        vCount = flist.size() / 3;//¶¥µã¸öÊı
-        float[] vertexArray = new float[flist.size()];//¶¥µã×ø±êÊı×é
-        for (int i = 0; i < vCount; i++)//Ñ­»·±éÀú¶¥µã×ø±êÊı×é
+        vCount = flist.size() / 3;//é¡¶ç‚¹ä¸ªæ•°
+        float[] vertexArray = new float[flist.size()];//é¡¶ç‚¹åæ ‡æ•°ç»„
+        for (int i = 0; i < vCount; i++)//å¾ªç¯éå†é¡¶ç‚¹åæ ‡æ•°ç»„
         {
-            vertexArray[i * 3] = flist.get(i * 3);//Îª¶¥µã×ø±êÊı×é¸³Öµ-x
-            vertexArray[i * 3 + 1] = flist.get(i * 3 + 1);//Îª¶¥µã×ø±êÊı×é¸³Öµ-y
-            vertexArray[i * 3 + 2] = flist.get(i * 3 + 2);//Îª¶¥µã×ø±êÊı×é¸³Öµ-z
+            vertexArray[i * 3] = flist.get(i * 3);//ä¸ºé¡¶ç‚¹åæ ‡æ•°ç»„èµ‹å€¼-x
+            vertexArray[i * 3 + 1] = flist.get(i * 3 + 1);//ä¸ºé¡¶ç‚¹åæ ‡æ•°ç»„èµ‹å€¼-y
+            vertexArray[i * 3 + 2] = flist.get(i * 3 + 2);//ä¸ºé¡¶ç‚¹åæ ‡æ•°ç»„èµ‹å€¼-z
+            Log.d("3699anglr", vertexArray[i * 3] + "," + vertexArray[i * 3 + 1] + "," + vertexArray[i * 3 + 2] + "\n");
         }
         ByteBuffer vbb = ByteBuffer.allocateDirect(vertexArray.length * 4);
-        vbb.order(ByteOrder.nativeOrder());    //ÉèÖÃ×Ö½ÚË³ĞòÎª±¾µØ²Ù×÷ÏµÍ³Ë³Ğò
+        vbb.order(ByteOrder.nativeOrder());    //è®¾ç½®å­—èŠ‚é¡ºåºä¸ºæœ¬åœ°æ“ä½œç³»ç»Ÿé¡ºåº
         mVertexBuffer = vbb.asFloatBuffer();
-        mVertexBuffer.put(vertexArray);//½«¶¥µã×ø±êÊı¾İ·Å½ø»º³å
-        mVertexBuffer.position(0);//ÉèÖÃ»º³åÆğÊ¼Î»ÖÃ
+        mVertexBuffer.put(vertexArray);//å°†é¡¶ç‚¹åæ ‡æ•°æ®æ”¾è¿›ç¼“å†²
+        mVertexBuffer.position(0);//è®¾ç½®ç¼“å†²èµ·å§‹ä½ç½®
     }
 
-    // ³õÊ¼»¯×ÅÉ«Æ÷
+    // åˆå§‹åŒ–ç€è‰²å™¨
     public void initShader(GraphicalSurfaceView mv) {
-        //¼ÓÔØ¶¥µã×ÅÉ«Æ÷µÄ½Å±¾ÄÚÈİ
-        mVertexShader = ShaderUtil.loadFromAssetsFile("vertex1.sh", mv.getResources());
-        //¼ÓÔØÆ¬Ôª×ÅÉ«Æ÷µÄ½Å±¾ÄÚÈİ
-        mFragmentShader = ShaderUtil.loadFromAssetsFile("frag1.sh", mv.getResources());
-        //»ùÓÚ¶¥µã×ÅÉ«Æ÷ÓëÆ¬Ôª×ÅÉ«Æ÷´´½¨³ÌĞò
+        //åŠ è½½é¡¶ç‚¹ç€è‰²å™¨çš„è„šæœ¬å†…å®¹
+        mVertexShader = ShaderUtil.loadFromAssetsFile("vertex.sh", mv.getResources());
+        //åŠ è½½ç‰‡å…ƒç€è‰²å™¨çš„è„šæœ¬å†…å®¹
+        mFragmentShader = ShaderUtil.loadFromAssetsFile("frag.sh", mv.getResources());
+        //åŸºäºé¡¶ç‚¹ç€è‰²å™¨ä¸ç‰‡å…ƒç€è‰²å™¨åˆ›å»ºç¨‹åº
         mProgram = createProgram(mVertexShader, mFragmentShader);
-        //»ñÈ¡³ÌĞòÖĞ¶¥µãÎ»ÖÃÊôĞÔÒıÓÃid  
+        //è·å–ç¨‹åºä¸­é¡¶ç‚¹ä½ç½®å±æ€§å¼•ç”¨id
         maPositionHandle = GLES30.glGetAttribLocation(mProgram, "aPosition");
-        //»ñÈ¡³ÌĞòÖĞ¶¥µãÑÕÉ«ÊôĞÔÒıÓÃid  
+        //è·å–ç¨‹åºä¸­é¡¶ç‚¹é¢œè‰²å±æ€§å¼•ç”¨id
         maColorHandle = GLES30.glGetAttribLocation(mProgram, "aColor");
-        //»ñÈ¡³ÌĞòÖĞ×Ü±ä»»¾ØÕóÒıÓÃid
+        //è·å–ç¨‹åºä¸­æ€»å˜æ¢çŸ©é˜µå¼•ç”¨id
         muMVPMatrixHandle = GLES30.glGetUniformLocation(mProgram, "uMVPMatrix");
     }
 
-    //»æÖÆ·½·¨
+    //ç»˜åˆ¶æ–¹æ³•
     public void drawSelf() {
-        // Ö¸¶¨Ê¹ÓÃÄ³Ì××ÅÉ«Æ÷³ÌĞò
+        // æŒ‡å®šä½¿ç”¨æŸå¥—ç€è‰²å™¨ç¨‹åº
         GLES30.glUseProgram(mProgram);
-        //³õÊ¼»¯±ä»»¾ØÕó
+        //åˆå§‹åŒ–å˜æ¢çŸ©é˜µ
         Matrix.setRotateM(mMMatrix, 0, 0, 0, 1, 0);
-        //ÉèÖÃÑØZÖáÕıÏòÎ»ÒÆ1
+        //è®¾ç½®æ²¿Zè½´æ­£å‘ä½ç§»1
         Matrix.translateM(mMMatrix, 0, 0, 0, 1);
-        //ÉèÖÃÈÆyÖáĞı×ª
+        //è®¾ç½®ç»•yè½´æ—‹è½¬
         // Matrix.rotateM(mMMatrix,0,yAngle,0,1,0);
-        //ÉèÖÃÈÆzÖáĞı×ª
+        //è®¾ç½®ç»•zè½´æ—‹è½¬
         // Matrix.rotateM(mMMatrix,0,xAngle,1,0,0);
-        //½«×îÖÕ±ä»»¾ØÕó´«ÈëäÖÈ¾¹ÜÏß
+        //å°†æœ€ç»ˆå˜æ¢çŸ©é˜µä¼ å…¥æ¸²æŸ“ç®¡çº¿
         GLES30.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, MatrixState.getFinalMatrix(mMMatrix), 0);
-        //½«¶¥µãÎ»ÖÃÊı¾İËÍÈëäÖÈ¾¹ÜÏß
+        //å°†é¡¶ç‚¹ä½ç½®æ•°æ®é€å…¥æ¸²æŸ“ç®¡çº¿
         GLES30.glVertexAttribPointer
                 (
                         maPositionHandle,
@@ -130,11 +135,11 @@ public class SixPointedStar {
                         3 * 4,
                         mVertexBuffer
                 );
-        //½«¶¥µãÑÕÉ«Êı¾İËÍÈëäÖÈ¾¹ÜÏß
+        //å°†é¡¶ç‚¹é¢œè‰²æ•°æ®é€å…¥æ¸²æŸ“ç®¡çº¿
         GLES30.glVertexAttrib4f(maColorHandle, color[0], color[1], color[2], 1.0f);
-        //ÆôÓÃ¶¥µãÎ»ÖÃÊı¾İÊı×é
+        //å¯ç”¨é¡¶ç‚¹ä½ç½®æ•°æ®æ•°ç»„
         GLES30.glEnableVertexAttribArray(maPositionHandle);
-        //»æÖÆÁù½ÇĞÇ
-        GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, vCount);
+        //ç»˜åˆ¶å…­è§’æ˜Ÿ
+        GLES30.glDrawArrays(GLES30.GL_TRIANGLE_FAN, 0, vCount);
     }
 }
